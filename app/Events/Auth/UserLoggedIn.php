@@ -10,19 +10,17 @@ use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
-use Laravel\Sanctum\NewAccessToken;
 
-class LoggedIn
+class UserLoggedIn
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     /**
      * Create a new event instance.
      */
-    public function __construct(public User $user, public NewAccessToken|null $token = null)
+    public function __construct(public User $user)
     {
         $this->user = $user;
-        $this->token = $token;
     }
 
     /**

@@ -24,18 +24,18 @@ class LoginRequest extends Request
         return [
             'email' => ['required', 'email'],
             'password' => ['required', 'string', 'max:191'],
-            // 'is_public' => ['sometimes', 'boolean'],
+            'remember_me' => ['sometimes', 'boolean'],
         ];
     }
 
-    // public function prepareForValidation()
-    // {
-    //     $input = $this->all();
+    public function prepareForValidation()
+    {
+        $input = $this->all();
 
-    //     if (isset($input['is_public'])) {
-    //         $input['is_public'] = $this->toBoolean($input['is_public']);
-    //     }
+        if (isset($input['remember_me'])) {
+            $input['remember_me'] = $this->toBoolean($input['remember_me']);
+        }
 
-    //     $this->replace($input);
-    // }
+        $this->replace($input);
+    }
 }

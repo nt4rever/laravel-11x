@@ -1,0 +1,10 @@
+### Me
+GET {{baseUrl}}/users/me
+Authorization: Bearer {{token}}
+content-type: application/json
+
+
+### List user
+GET {{baseUrl}}/users?page=1
+Authorization: Bearer {{token}}
+content-type: application/json

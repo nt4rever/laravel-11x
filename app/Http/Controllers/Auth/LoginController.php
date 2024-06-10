@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Events\Auth\LoggedIn;
+use App\Events\Auth\UserLoggedIn;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Resources\UserResource;
@@ -22,7 +22,7 @@ class LoginController extends Controller
         $user = auth()->user();
         $token = $user->createToken(name: 'api', expiresAt: now()->addMinutes(config('sanctum.expiration')));
 
-        event(new LoggedIn($user, $token));
+        event(new UserLoggedIn($user));
 
         return response()->json([
             'token' => $token->plainTextToken,

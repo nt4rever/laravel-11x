@@ -19,16 +19,13 @@ class AccountSeeder extends Seeder
         \DB::transaction(function () {
             $admin = User::query()->firstOrNew(['id' => 1]);
             $admin->fill([
-                'name' => fake()->name(),
-                'email' => fake()->unique()->safeEmail(),
+                'name' => 'Admin',
+                'email' => 'admin@example.com',
                 'email_verified_at' => now(),
-                'password' => Hash::make('password'),
+                'password' => Hash::make('abcd1234'),
                 'remember_token' => Str::random(10),
             ]);
 
-            $role = Role::query()->where('name', 'Admin')->firstOrFail();
-            // $role->users()->save($admin);
-            $admin->role()->associate($role);
             $admin->save();
         });
     }

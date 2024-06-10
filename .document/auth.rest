@@ -1,0 +1,9 @@
+### Login
+POST {{baseUrl}}/auth/login
+content-type: application/json
+X-Lang: en
+
+{
+    "email": "{{email}}",
+    "password": "{{password}}"
+}
