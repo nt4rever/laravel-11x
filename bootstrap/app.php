@@ -4,8 +4,6 @@ use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\HttpException;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -21,31 +19,11 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
-        // Global exception filter (HTTP Exception).
-        $exceptions->render(function (HttpException $e, Request $request) {
+        $exceptions->shouldRenderJsonWhen(function (Request $request, Throwable $e) {
             if ($request->is('api/*')) {
-                return response()->json([
-                    'message' => $e->getMessage(),
-                ], $e->getStatusCode());
+                return true;
             }
-        });
 
-        // Global exception filter (Error Exception).
-        $exceptions->render(function (Throwable $e, Request $request) {
-            if ($request->is('api/*')) {
-                logger()->error('Internal Server Error', [
-                    'error' => [
-                        'message' => $e->getMessage(),
-                    ],
-                    'url' => $request->fullUrl(),
-                ]);
-
-                return response()->json([
-                    'message' => __('message.internal_server_error'),
-                    'request_id' => context('request_id'),
-                    'path' => $request->path(),
-                    'timestamp' => now()->toIso8601String(),
-                ], Response::HTTP_INTERNAL_SERVER_ERROR);
-            }
+            return $request->expectsJson();
         });
     })->create();
