@@ -16,15 +16,20 @@ class UserRequestId
      */
     public function handle(Request $request, Closure $next): Response
     {
-        // Get existing id or generate new one.
-        $requestId = $request->header('X-Request-Id') ?? (string) \Str::ulid();
+        $requestId = (string) \Str::ulid();
 
-        // Add to context.
         Context::add('request_id', $requestId);
+
+        \Log::withContext([
+            'request-id' => $requestId,
+            'url' => $request->fullUrl(),
+        ]);
 
         /** @var \Illuminate\Http\Response $response */
         $response = $next($request);
 
-        return $response->header('X-Request-Id', $requestId);
+        $response->headers->set('X-Request-Id', $requestId);
+
+        return $response;
     }
 }

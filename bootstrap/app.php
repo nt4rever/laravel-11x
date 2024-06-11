@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\WithTransaction;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -17,10 +18,17 @@ return Application::configure(basePath: dirname(__DIR__))
             \App\Http\Middleware\Locale::class,
             \App\Http\Middleware\UserRequestId::class,
         ]);
+
+        $middleware->alias([
+            'withTransaction' => WithTransaction::class,
+        ]);
+
     })
     ->withExceptions(function (Exceptions $exceptions) {
         $exceptions->shouldRenderJsonWhen(function (Request $request) {
             return $request->is('api/*') || $request->expectsJson();
         });
+
+        $exceptions->dontReportDuplicates();
 
     })->create();
