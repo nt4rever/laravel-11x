@@ -7,3 +7,8 @@ X-Lang: en
     "email": "{{email}}",
     "password": "{{password}}"
 }
+
+### Logout
+GET {{baseUrl}}/auth/logout
+Authorization: Bearer {{token}}
+content-type: application/json

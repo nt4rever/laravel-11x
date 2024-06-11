@@ -2,8 +2,9 @@
 
 use Illuminate\Support\Facades\Route;
 
-Route::group(['prefix' => 'auth', 'middleware' => []], function () {
+Route::group(['prefix' => 'auth'], function () {
     Route::post('login', \App\Http\Controllers\Auth\LoginController::class);
+    Route::get('logout', \App\Http\Controllers\Auth\LogoutController::class)->middleware('auth:sanctum');
 });
 
 Route::group(['prefix' => 'users', 'middleware' => ['auth:sanctum']], function () {
