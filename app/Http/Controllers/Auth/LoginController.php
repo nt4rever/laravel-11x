@@ -14,7 +14,7 @@ class LoginController extends Controller
     public function __invoke(LoginRequest $request)
     {
         $inputs = $request->validated();
-        if (!auth()->attempt($inputs)) {
+        if (! auth()->attempt($inputs)) {
             abort(Response::HTTP_UNAUTHORIZED, __('auth.failed'));
         }
 

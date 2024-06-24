@@ -18,7 +18,7 @@ class WithTransaction
      */
     public function handle(Request $request, Closure $next): Response
     {
-        return rescue(fn() => DB::transaction(function () use ($request, $next) {
+        return rescue(fn () => DB::transaction(function () use ($request, $next) {
             $result = $next($request);
 
             if (isset($result->exception)) {

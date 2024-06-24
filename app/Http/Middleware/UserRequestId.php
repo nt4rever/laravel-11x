@@ -16,7 +16,8 @@ class UserRequestId
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $requestId = (string) \Str::ulid();
+        // Get existing id or generate new one.
+        $requestId = $request->header('X-Request-Id') ?? (string) \Str::ulid();
 
         Context::add('request_id', $requestId);
 
@@ -25,11 +26,9 @@ class UserRequestId
             'url' => $request->fullUrl(),
         ]);
 
-        /** @var \Illuminate\Http\Response $response */
-        $response = $next($request);
-
-        $response->headers->set('X-Request-Id', $requestId);
-
-        return $response;
+        return tap($next($request), function ($response) use ($requestId) {
+            /** @var \Illuminate\Http\Response $response */
+            $response->headers->set('X-Request-Id', $requestId);
+        });
     }
 }

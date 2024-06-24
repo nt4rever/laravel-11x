@@ -9,5 +9,5 @@ Route::get('/', function () {
 
 // Temporarily route login.
 Route::get('/login', function () {
-    return response(["message" => "Not found."], Response::HTTP_NOT_FOUND);
+    return response(['message' => 'Not found.'], Response::HTTP_NOT_FOUND);
 })->name('login');

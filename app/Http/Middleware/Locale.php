@@ -20,8 +20,8 @@ class Locale
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if ($request->header('X-Lang') && in_array($request->header('X-Lang', 'en'), $this->locales)) {
-            $locale = $request->header('X-Lang');
+        if ($request->header('X-Locale') && in_array($request->header('X-Locale', 'en'), $this->locales)) {
+            $locale = $request->header('X-Locale');
             app()->setLocale($locale);
         }
 
