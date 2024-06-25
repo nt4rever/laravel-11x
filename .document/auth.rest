@@ -1,7 +1,8 @@
 ### Login
 POST {{baseUrl}}/auth/login
-content-type: application/json
-X-Lang: en
+Content-Type: : application/json
+Accept: : application/json
+X-Locale: en
 
 {
     "email": "{{email}}",
@@ -10,5 +11,7 @@ X-Lang: en
 
 ### Logout
 GET {{baseUrl}}/auth/logout
+Accept: application/json
+X-Request-Id: 01J172D3CWP97DHYQR8BNZFP5D
 Authorization: Bearer {{token}}
 content-type: application/json
