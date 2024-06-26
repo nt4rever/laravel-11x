@@ -52,6 +52,9 @@
         ],
         "pint": [
             "./vendor/bin/pint"
+        ],
+        "helper": [
+            "@php artisan ide-helper:models"
         ]
     },
     "extra": {
