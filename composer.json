@@ -9,7 +9,8 @@
         "laravel/framework": "^11.0",
         "laravel/octane": "^2.4",
         "laravel/sanctum": "^4.0",
-        "laravel/tinker": "^2.9"
+        "laravel/tinker": "^2.9",
+        "predis/predis": "^2.2"
     },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^3.0",
