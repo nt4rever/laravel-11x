@@ -10,5 +10,6 @@ return [
     */
 
     'internal_server_error' => 'Đã xảy ra lỗi hệ thống.',
+    'not_found' => 'Not found.',
 
 ];

@@ -8,3 +8,8 @@ Accept: : application/json
 GET {{baseUrl}}/users?page=1
 Authorization: Bearer {{token}}
 Accept: : application/json
+
+### Get user
+GET {{baseUrl}}/users/1
+Authorization: Bearer {{token}}
+Accept: : application/json

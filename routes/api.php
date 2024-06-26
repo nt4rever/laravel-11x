@@ -10,4 +10,5 @@ Route::group(['prefix' => 'auth'], function () {
 Route::group(['prefix' => 'users', 'middleware' => ['auth:sanctum']], function () {
     Route::get('me', \App\Http\Controllers\User\MeController::class);
     Route::get('/', \App\Http\Controllers\User\ListController::class);
+    Route::get('{user}', \App\Http\Controllers\User\ShowController::class);
 });

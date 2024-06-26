@@ -10,5 +10,6 @@ return [
     */
 
     'internal_server_error' => 'Internal Server Error.',
+    'not_found' => 'Not found.',
 
 ];

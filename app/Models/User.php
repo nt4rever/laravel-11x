@@ -82,4 +82,25 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    /**
+     * Retrieve the model for a bound value.
+     *
+     * @param  mixed  $value
+     * @param  string|null  $field
+     * @return \Illuminate\Database\Eloquent\Model|null
+     */
+    public function resolveRouteBinding($value, $field = null)
+    {
+        /** @var \Illuminate\Support\Collection $users  */
+        $users = \Cache::remember("users_id_{$value}", 300, function () use ($value) {
+            return User::query()->where('id', $value)->limit(1)->get();
+        });
+
+        if ($users->isEmpty()) {
+            abort(404, __('message.not_found'));
+        }
+
+        return $users->first();
+    }
 }
