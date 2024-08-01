@@ -16,6 +16,7 @@ services:
         image: postgres:alpine
         volumes:
             - postgres_data:/var/lib/postgresql/data
+            - ./.docker/postgres/create-testing-database.sql:/docker-entrypoint-initdb.d/10-create-testing-database.sql
         ports:
             - 12432:5432
         environment:
@@ -23,6 +24,10 @@ services:
             POSTGRES_DB: laravel
             POSTGRES_USER: root
             POSTGRES_PASSWORD: root
+        healthcheck:
+            test: ["CMD", "pg_isready", "-q", "-d", "laravel", "-U", "root"]
+            retries: 3
+            timeout: 5s
     minio:
         image: minio/minio:latest
         ports:
