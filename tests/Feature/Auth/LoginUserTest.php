@@ -22,6 +22,7 @@ class LoginUserTest extends TestCase
         $response = $this->post('/api/auth/login', [
             'email' => 'test@example.com',
             'password' => 'password',
+            'remember_me' => 'true',
         ], [
             'accept' => 'application/json',
         ]);
@@ -30,6 +31,24 @@ class LoginUserTest extends TestCase
         $response->assertJsonStructure([
             'token',
         ]);
+    }
+
+    public function test_fail_login(): void
+    {
+        User::factory()->create([
+            'name' => 'Test User',
+            'email' => 'test@example.com',
+            'password' => 'password',
+        ]);
+
+        $response = $this->post('/api/auth/login', [
+            'email' => 'test@example.com',
+            'password' => '123456',
+        ], [
+            'accept' => 'application/json',
+        ]);
+
+        $response->assertStatus(401);
     }
 
     #[DataProvider('dataSetToFailResponse')]

@@ -6,3 +6,5 @@ test:
 	php artisan test --coverage --min=75.3
 serve:
 	php artisan serve --port=12000
+refresh:
+	php artisan migrate:refresh --seed
