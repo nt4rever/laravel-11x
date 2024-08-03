@@ -3,6 +3,13 @@
 namespace App\Http\Requests\Auth;
 
 use App\Http\Requests\Request;
+use Illuminate\Auth\Events\Lockout;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
+use RateLimiter;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
 
 class LoginRequest extends Request
 {
@@ -37,5 +44,53 @@ class LoginRequest extends Request
         }
 
         $this->replace($input);
+    }
+
+    /**
+     * Attempt to authenticate the request's credentials.
+     *
+     * @throws \Symfony\Component\HttpKernel\Exception\HttpException
+     */
+    public function authenticate(): void
+    {
+        $this->ensureIsNotRateLimited();
+
+        if (! Auth::attempt($this->only(['email', 'password'], $this->boolean('remember_me')))) {
+            RateLimiter::hit($this->throttleKey(), config('throttle.login.retry', 5 * 60));
+
+            throw new HttpException(Response::HTTP_UNAUTHORIZED, __('auth.failed'));
+        }
+
+        RateLimiter::clear($this->throttleKey());
+    }
+
+    /**
+     *  Ensure this login request is not rate limited.
+     *
+     * @throws \Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException
+     */
+    public function ensureIsNotRateLimited(): void
+    {
+        if (! RateLimiter::tooManyAttempts($this->throttleKey(), config('throttle.login.max_attempt', 5)
+        )) {
+            return;
+        }
+
+        event(new Lockout($this));
+
+        $seconds = RateLimiter::availableIn($this->throttleKey());
+
+        throw new TooManyRequestsHttpException($seconds, __('auth.throttle', [
+            'seconds' => $seconds,
+            'minutes' => ceil($seconds / 60),
+        ]));
+    }
+
+    /**
+     * Get rate limiting throttle key for the request.
+     */
+    public function throttleKey(): string
+    {
+        return Str::transliterate(Str::lower($this->string('email')).'|'.$this->ip());
     }
 }

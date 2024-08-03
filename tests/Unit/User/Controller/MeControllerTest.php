@@ -15,6 +15,7 @@ class MeControllerTest extends TestCase
     use RefreshDatabase;
 
     private MeController $controller;
+
     private Request|MockInterface $request;
 
     protected function setUp(): void

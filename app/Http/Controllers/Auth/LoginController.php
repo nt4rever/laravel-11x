@@ -6,21 +6,20 @@ use App\Events\Auth\UserLoggedIn;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Resources\UserResource;
-use App\Models\User;
-use Symfony\Component\HttpFoundation\Response;
 
 class LoginController extends Controller
 {
     public function __invoke(LoginRequest $request)
     {
-        $credentials = $request->only(['email', 'password']);
-        if (! auth()->attempt($credentials)) {
-            abort(Response::HTTP_UNAUTHORIZED, __('auth.failed'));
-        }
+        $request->authenticate();
 
-        /** @var User $user */
-        $user = auth()->user();
-        $token = $user->createToken(name: 'api', expiresAt: now()->addMinutes(config('sanctum.expiration')));
+        /**
+         * @var \App\Models\User
+         */
+        $user = $request->user();
+
+        $token = $user->createToken(name: 'api', expiresAt: now()
+            ->addMinutes(config('sanctum.expiration')));
 
         event(new UserLoggedIn($user));
 

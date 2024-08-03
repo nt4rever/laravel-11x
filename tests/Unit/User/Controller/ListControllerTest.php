@@ -15,6 +15,7 @@ class ListControllerTest extends TestCase
     use RefreshDatabase;
 
     private ListController $controller;
+
     private Request|MockInterface $request;
 
     protected function setUp(): void
