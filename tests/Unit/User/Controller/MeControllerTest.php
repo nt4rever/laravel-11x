@@ -7,6 +7,7 @@ use App\Http\Requests\Request;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Mockery;
 use Mockery\MockInterface;
 use Tests\TestCase;
 
@@ -23,6 +24,13 @@ class MeControllerTest extends TestCase
         parent::setUp();
 
         $this->controller = app(MeController::class);
+    }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+
+        Mockery::close();
     }
 
     public function test_should_return_user_resource()

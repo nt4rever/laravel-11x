@@ -7,7 +7,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\AuthenticatedUser;
 use Tests\TestCase;
 
-class UserTest extends TestCase
+class GetUserTest extends TestCase
 {
     use AuthenticatedUser, RefreshDatabase;
 
@@ -53,5 +53,19 @@ class UserTest extends TestCase
         $response
             ->assertStatus(200)
             ->assertJsonCount(15, 'data');
+    }
+
+    public function test_success_get_list_user_with_parameters(): void
+    {
+        $this->setUpUser();
+        User::factory(20)->create();
+
+        $response = $this->get('/api/users?page=2', [
+            'accept' => 'application/json',
+        ]);
+
+        $response
+            ->assertStatus(200)
+            ->assertJsonCount(6, 'data');
     }
 }

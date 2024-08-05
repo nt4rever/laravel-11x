@@ -7,9 +7,8 @@ use Illuminate\Auth\Events\Lockout;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use RateLimiter;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
+use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 
 class LoginRequest extends Request
 {
@@ -49,7 +48,7 @@ class LoginRequest extends Request
     /**
      * Attempt to authenticate the request's credentials.
      *
-     * @throws \Symfony\Component\HttpKernel\Exception\HttpException
+     * @throws \Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException
      */
     public function authenticate(): void
     {
@@ -58,7 +57,7 @@ class LoginRequest extends Request
         if (! Auth::attempt($this->only(['email', 'password'], $this->boolean('remember_me')))) {
             RateLimiter::hit($this->throttleKey(), config('throttle.login.retry', 5 * 60));
 
-            throw new HttpException(Response::HTTP_UNAUTHORIZED, __('auth.failed'));
+            throw new UnauthorizedHttpException('', __('auth.failed'));
         }
 
         RateLimiter::clear($this->throttleKey());

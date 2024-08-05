@@ -4,6 +4,7 @@ namespace Tests\Feature\Auth;
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Str;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
@@ -108,5 +109,34 @@ class LoginUserTest extends TestCase
 
             ],
         ];
+    }
+
+    public function test_login_reach_rate_limit(): void
+    {
+        User::factory()->create([
+            'name' => 'Test User',
+            'email' => 'test@example.com',
+            'password' => 'password',
+        ]);
+
+        \RateLimiter::increment(
+            Str::transliterate(Str::lower('test@example.com|192.168.1.100')),
+            config('throttle.login.retry', 5 * 60),
+            config('throttle.login.max_attempt', 5)
+        );
+
+        $response = $this
+            ->withServerVariables(['REMOTE_ADDR' => '192.168.1.100'])
+            ->post('/api/auth/login', [
+                'email' => 'test@example.com',
+                'password' => 'password',
+            ], [
+                'accept' => 'application/json',
+                'X-Locale' => 'en',
+            ]);
+
+        $response->assertStatus(429);
+        $seconds = config('throttle.login.retry', 5 * 60);
+        $response->assertJsonPath('message', "Too many login attempts. Please try again in $seconds seconds.");
     }
 }

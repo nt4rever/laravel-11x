@@ -7,6 +7,7 @@ use App\Http\Requests\Request;
 use App\Http\Resources\UserCollection;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Mockery;
 use Mockery\MockInterface;
 use Tests\TestCase;
 
@@ -24,6 +25,13 @@ class ListControllerTest extends TestCase
 
         $this->controller = app(ListController::class);
         $this->request = $this->mock(Request::class);
+    }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+
+        Mockery::close();
     }
 
     public function test_should_return_user_collection()
