@@ -52,6 +52,6 @@ class UserTest extends TestCase
 
         $response
             ->assertStatus(200)
-            ->assertJsonCount(15, 'data');
+            ->assertJsonCount(20, 'data');
     }
 }
