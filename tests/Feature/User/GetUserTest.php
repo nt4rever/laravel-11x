@@ -52,7 +52,7 @@ class GetUserTest extends TestCase
 
         $response
             ->assertStatus(200)
-            ->assertJsonCount(15, 'data');
+            ->assertJsonCount(20, 'data');
     }
 
     public function test_success_get_list_user_with_parameters(): void
@@ -60,12 +60,26 @@ class GetUserTest extends TestCase
         $this->setUpUser();
         User::factory(20)->create();
 
-        $response = $this->get('/api/users?page=2', [
+        $response = $this->get('/api/users?page=2&limit=6', [
             'accept' => 'application/json',
         ]);
 
         $response
             ->assertStatus(200)
             ->assertJsonCount(6, 'data');
+    }
+
+    public function test_success_get_list_user_with_search_keyword(): void
+    {
+        $this->setUpUser();
+        User::factory(20)->create();
+
+        $response = $this->get('/api/users?search=a', [
+            'accept' => 'application/json',
+        ]);
+
+        $response
+            ->assertStatus(200)
+            ->assertJsonStructure(['data']);
     }
 }
