@@ -19,7 +19,6 @@ class ListControllerTest extends TestCase
 
     private IndexRequest|MockInterface $request;
 
-
     protected function setUp(): void
     {
         parent::setUp();
