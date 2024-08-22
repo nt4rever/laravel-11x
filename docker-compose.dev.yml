@@ -29,20 +29,15 @@ services:
             retries: 3
             timeout: 5s
     minio:
-        image: minio/minio:latest
+        build:
+            context: .
+            dockerfile: ./.docker/minio/Dockerfile
         ports:
             - "12900:9000"
             - "12901:9001"
         environment:
             - MINIO_ROOT_USER=minio
             - MINIO_ROOT_PASSWORD=minio123
-        entrypoint: sh
-        command: -c "
-            mkdir -p /data/.minio.sys/buckets;
-            cp -r /policies/* /data/.minio.sys/;
-            cp -r /export/* /data/;
-            minio server /data --console-address ":9001";
-            "
         volumes:
             - minio:/data
             - ./.docker/minio/export:/export
