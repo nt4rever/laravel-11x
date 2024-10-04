@@ -14,6 +14,10 @@ Route::group(['prefix' => 'users', 'middleware' => ['auth:sanctum']], function (
     Route::get('/', \App\Http\Controllers\User\ListController::class);
 });
 
-Route::post('token', function (FcmService $fcmService, Request $request){
-    return $fcmService->send($request->data, $request->token);
+Route::post('token', function (FcmService $fcmService, Request $request) {
+    return $fcmService->send(token: $request->token);
+});
+
+Route::post('batch', function (FcmService $fcmService, Request $request) {
+    return $fcmService->sendBatchPool(tokens: $request->tokens);
 });
